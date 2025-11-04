@@ -2,23 +2,38 @@ from common import get_soup
 
 
 def scrape_page(num):
-    """Takes a page and returns a list of links to the book that are on the page."""
+    """Takes a page number and returns a list of links to the books that are on the page."""
+    url = f"http://books.toscrape.com/catalogue/page-{num}.html"
+    soup = get_soup(url)
 
-    return None
+    book_links = []
+    articles = soup.find_all("article", class_="product_pod")
+
+    for article in articles:
+        link = article.find("a")["href"]
+
+        full_link = "http://books.toscrape.com/catalogue/" + link
+        book_links.append(full_link)
+
+    return book_links
 
 
 def scrape_all_pages():
     """Scrapes all pages, returning a list of book links."""
+    all_book_links = []
+    page_num = 1
 
-    return None
+    while True:
+        book_links = scrape_page(page_num)
+        if not book_links:
+            break
+        all_book_links.extend(book_links)
+        page_num += 1
+
+    return all_book_links
 
 
 if __name__ == "__main__":
-
-    # code for testing
-
-    # test scrape_page
-
     page_3_actual_book_urls = [
         "http://books.toscrape.com/catalogue/slow-states-of-collapse-poems_960/index.html",
         "http://books.toscrape.com/catalogue/reasons-to-stay-alive_959/index.html",
